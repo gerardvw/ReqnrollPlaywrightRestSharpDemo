@@ -1,3 +1,4 @@
+using Microsoft.Playwright;
 using ReqnrollPlaywrightRestSharpDemo.Context;
 using ReqnrollPlaywrightRestSharpDemo.UI.Pages;
 
@@ -21,31 +22,46 @@ namespace ReqnrollPlaywrightRestSharpDemo.StepDefinitions
             _productsPage = new ProductsPage(_scenarioContextUI.BaseUrl, _scenarioContextUI.Page);
         }
 
-        [Given("products page is opened")]
-        public async Task GivenProductsPageIsOpened()
+        [Given("{word} is authenticated and authorised for searching products")]
+        public async Task UserIsAuthenticatedAndAuthorisedForSearchingProducts(string user)
         {
+            //No authentication and authorisation is applicable in this case, so only navigating to page
             var response = await _productsPage.Navigate();
 
             response.Should().NotBeNull();
             response!.Status.Should().BeInRange(200, 299);
+
+            await _productsPage.AcceptConsentIfVisible();
         }
 
-        [When("I search for {string}")]
-        public void WhenISearchFor(string searchTerm)
+        [When("{word} searches for {string}")]
+        public void UserSearchesFor(string user, string searchTerm)
         {
-            throw new PendingStepException();
+            _productsPage.SearchForItem(searchTerm);
         }
 
-        [Then("I should see an item with description {string} and a price {string}")]
-        public void ThenIShouldSeeAnItemWithDescriptionAndAPrice(string description, string price)
+        [Then("An item with description {string} and a price {string} should be returned")]
+        public async Task AnItemWithDescriptionAndAPriceShouldBeReturned(string expectedDescription, string expectedPrice)
         {
-            throw new PendingStepException();
+            var productInfoItems = _productsPage.ProductInfoItemsFiltered([expectedDescription, expectedPrice]);
+
+            await Assertions.Expect(productInfoItems).ToBeVisibleAsync();
         }
 
-        [Then("it should be possible to add this item to my cart")]
-        public void ThenItShouldBePossibleToAddThisItemToMyCart()
+        [Then("No items should be returned")]
+        public async Task NoItemsShouldBeReturned()
         {
-            throw new PendingStepException();
+            var productInfoList = _productsPage.ProductInfoList();
+
+            await Assertions.Expect(productInfoList).ToHaveCountAsync(0);
+        }
+
+        [Then("There should be items returned")]
+        public async Task AllItemsShouldBeReturned()
+        {
+            var productInfoList = _productsPage.ProductInfoList();
+
+            await Assertions.Expect(productInfoList).Not.ToHaveCountAsync(0);
         }
     }
 }

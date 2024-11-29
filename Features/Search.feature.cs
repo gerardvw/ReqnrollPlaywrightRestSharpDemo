@@ -20,16 +20,16 @@ namespace ReqnrollPlaywrightRestSharpDemo.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "2.0.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Search")]
-    public partial class SearchFeature
+    [NUnit.Framework.DescriptionAttribute("Search product")]
+    public partial class SearchProductFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Search", "    As a customer\r\n    I want be able to search for products\r\n    So that I can o" +
-                "rder the ones I like", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Search product", "    As a customer\r\n    I want be able to search for products\r\n    So that I can f" +
+                "ind specific items quickly", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
         
 #line 1 "Search.feature"
 #line hidden
@@ -83,16 +83,15 @@ namespace ReqnrollPlaywrightRestSharpDemo.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("search for a product")]
-        [NUnit.Framework.CategoryAttribute("chrome")]
-        [NUnit.Framework.CategoryAttribute("msedge")]
+        [NUnit.Framework.DescriptionAttribute("Search for a product that does exist")]
+        [NUnit.Framework.CategoryAttribute("ui")]
+        [NUnit.Framework.CategoryAttribute("api")]
         [NUnit.Framework.TestCaseAttribute("\"t-shirt\"", "\"Pure Cotton V-Neck T-Shirt\"", "\"Rs. 1299\"", null)]
-        [NUnit.Framework.TestCaseAttribute("\"cotton\"", "\"Pure Cotton Neon Green Tshirt\"", "\"Rs. 850\"", null)]
-        public async System.Threading.Tasks.Task SearchForAProduct(string searchterm, string description, string price, string[] exampleTags)
+        public async System.Threading.Tasks.Task SearchForAProductThatDoesExist(string searchterm, string description, string price, string[] exampleTags)
         {
             string[] @__tags = new string[] {
-                    "chrome",
-                    "msedge"};
+                    "ui",
+                    "api"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
@@ -102,7 +101,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.Features
             argumentsOfScenario.Add("searchterm", searchterm);
             argumentsOfScenario.Add("description", description);
             argumentsOfScenario.Add("price", price);
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("search for a product", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Search for a product that does exist", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 8
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -114,16 +113,113 @@ namespace ReqnrollPlaywrightRestSharpDemo.Features
             {
                 await this.ScenarioStartAsync();
 #line 9
-    await testRunner.GivenAsync("products page is opened", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+    await testRunner.GivenAsync("Jeff is authenticated and authorised for searching products", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 10
-    await testRunner.WhenAsync(string.Format("I search for {0}", searchterm), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.WhenAsync(string.Format("Jeff searches for {0}", searchterm), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 11
-    await testRunner.ThenAsync(string.Format("I should see an item with description {0} and a price {1}", description, price), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+    await testRunner.ThenAsync(string.Format("An item with description {0} and a price {1} should be returned", description, price), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 12
-    await testRunner.AndAsync("it should be possible to add this item to my cart", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Search for a product that does not exist")]
+        [NUnit.Framework.CategoryAttribute("ui")]
+        [NUnit.Framework.CategoryAttribute("api")]
+        public async System.Threading.Tasks.Task SearchForAProductThatDoesNotExist()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "ui",
+                    "api"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Search for a product that does not exist", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 19
+    this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 20
+    await testRunner.GivenAsync("Jeff is authenticated and authorised for searching products", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 21
+    await testRunner.WhenAsync("Jeff searches for \"does not exist\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 22
+    await testRunner.ThenAsync("No items should be returned", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Search with an empty query")]
+        [NUnit.Framework.CategoryAttribute("ui")]
+        [NUnit.Framework.CategoryAttribute("api")]
+        public async System.Threading.Tasks.Task SearchWithAnEmptyQuery()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "ui",
+                    "api"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Search with an empty query", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 25
+    this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 26
+    await testRunner.GivenAsync("Jeff is authenticated and authorised for searching products", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 27
+    await testRunner.WhenAsync("Jeff searches for \"\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 28
+    await testRunner.ThenAsync("There should be items returned", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Scenario to be executed manually")]
+        [NUnit.Framework.CategoryAttribute("manual")]
+        public async System.Threading.Tasks.Task ScenarioToBeExecutedManually()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "manual"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Scenario to be executed manually", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 34
+    this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 35
+    await testRunner.GivenAsync("User is authenticated and authorised for searching products", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 36
+    await testRunner.WhenAsync("User searches for \"this is something to check manually\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 37
+    await testRunner.ThenAsync("No items should be returned", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

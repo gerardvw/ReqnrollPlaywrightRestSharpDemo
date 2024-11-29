@@ -1,4 +1,3 @@
-using Microsoft.Playwright;
 using ReqnrollPlaywrightRestSharpDemo.Context;
 using ReqnrollPlaywrightRestSharpDemo.UI;
 
@@ -20,7 +19,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
             _reqnrollOutputHelper = outputHelper;
         }
 
-        [BeforeScenario("@chrome or @msedge")]
+        [BeforeScenario("@ui")]
         public async Task BeforeScenario()
         {
             try
@@ -40,8 +39,8 @@ namespace ReqnrollPlaywrightRestSharpDemo
             }
         }
 
-        [AfterScenario("@chrome or @msedge")]
-        public async void AfterScenario(ScenarioContext scenarioContext)
+        [AfterScenario("@ui")]
+        public async Task AfterScenario(ScenarioContext scenarioContext)
         {
             try
             {

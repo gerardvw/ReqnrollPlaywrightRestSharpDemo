@@ -9,6 +9,8 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
         private ILocator Submit() => Page.Locator("#submit_search");
 
         protected override string RelativeUri => "/products";
+        
+        public ILocator ProductInfoList() => Page.Locator(".productinfo");
 
         public void SearchForItem(String searchTerm)
         {
@@ -16,13 +18,16 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
             Submit().ClickAsync();
         }
 
-        public ProductInfo ProductInfo(String expectedDescription, String expectedPrice)
+        public ILocator ProductInfoItemsFiltered(string[] expectedTexts)
         {
-            return new ProductInfo(
-                    Page.Locator(".productinfo")
-                            .Filter(new LocatorFilterOptions() { HasText = expectedDescription })
-                            .Filter(new LocatorFilterOptions() { HasText = expectedPrice })
-            );
+            var filteredLocator = ProductInfoList();
+            foreach (var text in expectedTexts)
+            {
+                // Sequentially filter the locator for each expected text
+                filteredLocator = filteredLocator.Filter(new LocatorFilterOptions { HasText = text });
+            }
+
+            return filteredLocator;
         }
     }
 }
