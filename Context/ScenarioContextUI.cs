@@ -4,6 +4,6 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context
 {
     public class ScenarioContextUI : ScenarioContextBase
     {
-        public IPage? Page { get; set; }
+        public required IPage Page { get; set; }
     }
 }

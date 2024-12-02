@@ -2,6 +2,6 @@
 {
     public class ScenarioContextBase
     {
-        public string? BaseUrl { get; set; }
+        public required string BaseUrl { get; set; }
     }
 }

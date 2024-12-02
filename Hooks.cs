@@ -29,7 +29,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 _browserInstance = new BrowserInstance();
                 await _browserInstance.Setup("chrome", true);   //TODO: get values from env.variable
 
-                _scenarioContextUI.Page = _browserInstance.Page;
+                _scenarioContextUI.Page = _browserInstance.Page!;
             }
             catch (Exception exception)
             {
