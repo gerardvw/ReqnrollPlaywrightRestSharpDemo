@@ -1,4 +1,5 @@
-using ReqnrollPlaywrightRestSharpDemo.Context;
+using Reqnroll.BoDi;
+using ReqnrollPlaywrightRestSharpDemo.Context.Search;
 using ReqnrollPlaywrightRestSharpDemo.UI;
 
 namespace ReqnrollPlaywrightRestSharpDemo
@@ -8,28 +9,31 @@ namespace ReqnrollPlaywrightRestSharpDemo
     {
         private readonly IReqnrollOutputHelper _reqnrollOutputHelper;
         private readonly ScenarioContext _scenarioContext;
-        private readonly ScenarioContextUI _scenarioContextUI;
 
         private BrowserInstance? _browserInstance;
 
-        public Hooks(IReqnrollOutputHelper outputHelper, ScenarioContext scenarioContext, ScenarioContextUI scenarioContextUI)
+        private readonly IObjectContainer _objectContainer;
+
+        public Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
         {
-            _scenarioContextUI = scenarioContextUI;
+            _objectContainer = objectContainer;
             _scenarioContext = scenarioContext;
-            _reqnrollOutputHelper = outputHelper;
+            _reqnrollOutputHelper = reqnrollOutputHelper;
         }
 
         [BeforeScenario("@ui")]
-        public async Task BeforeScenario()
+        public async Task BeforeScenarioUI()
         {
             try
             {
-                _scenarioContextUI.BaseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
-
                 _browserInstance = new BrowserInstance();
                 await _browserInstance.Setup("chrome", true);   //TODO: get values from env.variable
 
-                _scenarioContextUI.Page = _browserInstance.Page!;
+                var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
+                var page = _browserInstance.Page!;
+
+                //Register all contexts so they can be used in stepdefinitions
+                _objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(baseUrl, page));
             }
             catch (Exception exception)
             {
@@ -40,7 +44,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
         }
 
         [AfterScenario("@ui")]
-        public async Task AfterScenario(ScenarioContext scenarioContext)
+        public async Task AfterScenarioUI()
         {
             try
             {
@@ -62,6 +66,11 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 if (_browserInstance != null)
                 {
                     await _browserInstance.Teardown();
+                }
+                if (_objectContainer.IsRegistered<ISearchContext>())
+                {
+                    var searchContext = _objectContainer.Resolve<ISearchContext>();
+                    //Do some actions over here if needed, e.g. clean up
                 }
             }
         }

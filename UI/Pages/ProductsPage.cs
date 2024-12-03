@@ -1,5 +1,4 @@
 ﻿using Microsoft.Playwright;
-using ReqnrollPlaywrightRestSharpDemo.UI.Controls;
 
 namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
 {
@@ -12,10 +11,10 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
         
         public ILocator ProductInfoList() => Page.Locator(".productinfo");
 
-        public void SearchForItem(String searchTerm)
+        public async Task SearchForItem(string searchTerm)
         {
-            SearchFor().FillAsync(searchTerm);
-            Submit().ClickAsync();
+            await SearchFor().FillAsync(searchTerm);
+            await Submit().ClickAsync();
         }
 
         public ILocator ProductInfoItemsFiltered(string[] expectedTexts)

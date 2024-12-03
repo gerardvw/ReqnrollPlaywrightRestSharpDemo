@@ -1,9 +1,11 @@
 ﻿using Microsoft.Playwright;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ReqnrollPlaywrightRestSharpDemo.Context
 {
-    public class ScenarioContextUI : ScenarioContextBase
+    [method:SetsRequiredMembers]
+    public class ScenarioContextUI(string baseUrl, IPage page) : ScenarioContextBase(baseUrl)
     {
-        public required IPage Page { get; set; }
+        public required IPage Page { get; set; } = page;
     }
 }

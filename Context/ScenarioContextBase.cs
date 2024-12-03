@@ -1,7 +1,10 @@
-﻿namespace ReqnrollPlaywrightRestSharpDemo.Context
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ReqnrollPlaywrightRestSharpDemo.Context
 {
-    public class ScenarioContextBase
+    [method: SetsRequiredMembers]
+    public class ScenarioContextBase(string baseUrl)
     {
-        public required string BaseUrl { get; set; }
+        public required string BaseUrl { get; set; } = baseUrl;
     }
 }
