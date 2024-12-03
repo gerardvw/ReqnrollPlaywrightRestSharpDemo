@@ -1,4 +1,5 @@
 using Reqnroll.BoDi;
+using ReqnrollPlaywrightRestSharpDemo.API;
 using ReqnrollPlaywrightRestSharpDemo.Context.Search;
 using ReqnrollPlaywrightRestSharpDemo.UI;
 
@@ -11,6 +12,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
         private readonly ScenarioContext _scenarioContext;
 
         private BrowserInstance? _browserInstance;
+        private ApiClientInstance? _apiClientInstance;
 
         private readonly IObjectContainer _objectContainer;
 
@@ -66,6 +68,61 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 if (_browserInstance != null)
                 {
                     await _browserInstance.Teardown();
+                }
+                if (_objectContainer.IsRegistered<ISearchContext>())
+                {
+                    var searchContext = _objectContainer.Resolve<ISearchContext>();
+                    //Do some actions over here if needed, e.g. clean up
+                }
+            }
+        }
+
+        [BeforeScenario("@api")]
+        public async Task BeforeScenarioAPI()
+        {
+            try
+            {
+                var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
+
+                _apiClientInstance = new ApiClientInstance();
+                await _apiClientInstance.Setup(baseUrl);   //TODO: get values from env.variable
+
+                var restClient = _apiClientInstance.RestClient!;
+
+                //Register all contexts so they can be used in stepdefinitions
+                _objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(restClient));
+            }
+            catch (Exception exception)
+            {
+                _reqnrollOutputHelper.WriteLine(exception.Message);
+
+                throw;
+            }
+        }
+
+        [AfterScenario("@api")]
+        public async Task AfterScenarioAPI()
+        {
+            try
+            {
+                if (_scenarioContext.TestError != null)
+                {
+                    var error = _scenarioContext.TestError;
+                    var testName = _scenarioContext.ScenarioInfo.Title;
+                    //TODO: add extra logging?
+                }
+            }
+            catch (Exception exception)
+            {
+                _reqnrollOutputHelper.WriteLine(exception.Message);
+
+                throw;
+            }
+            finally
+            {
+                if (_apiClientInstance != null)
+                {
+                    await _apiClientInstance.Teardown();
                 }
                 if (_objectContainer.IsRegistered<ISearchContext>())
                 {
