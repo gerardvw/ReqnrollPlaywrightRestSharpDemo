@@ -6,22 +6,10 @@ using ReqnrollPlaywrightRestSharpDemo.UI;
 namespace ReqnrollPlaywrightRestSharpDemo
 {
     [Binding]
-    public sealed class Hooks
+    public sealed class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
     {
-        private readonly IReqnrollOutputHelper _reqnrollOutputHelper;
-        private readonly ScenarioContext _scenarioContext;
-
         private BrowserInstance? _browserInstance;
         private ApiClientInstance? _apiClientInstance;
-
-        private readonly IObjectContainer _objectContainer;
-
-        public Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
-        {
-            _objectContainer = objectContainer;
-            _scenarioContext = scenarioContext;
-            _reqnrollOutputHelper = reqnrollOutputHelper;
-        }
 
         [BeforeScenario("@ui")]
         public async Task BeforeScenarioUI()
@@ -35,11 +23,11 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 var page = _browserInstance.Page!;
 
                 //Register all contexts so they can be used in stepdefinitions
-                _objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(baseUrl, page));
+                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(baseUrl, page));
             }
             catch (Exception exception)
             {
-                _reqnrollOutputHelper.WriteLine(exception.Message);
+                reqnrollOutputHelper.WriteLine(exception.Message);
 
                 throw;
             }
@@ -50,16 +38,16 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             try
             {
-                if (_scenarioContext.TestError != null)
+                if (scenarioContext.TestError != null)
                 {
-                    var error = _scenarioContext.TestError;
-                    var testName = _scenarioContext.ScenarioInfo.Title;
+                    var error = scenarioContext.TestError;
+                    var testName = scenarioContext.ScenarioInfo.Title;
                     _browserInstance?.CreateScreenShotInReportFolder(testName);
                 }
             }
             catch (Exception exception)
             {
-                _reqnrollOutputHelper.WriteLine(exception.Message);
+                reqnrollOutputHelper.WriteLine(exception.Message);
 
                 throw;
             }
@@ -69,9 +57,9 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 {
                     await _browserInstance.Teardown();
                 }
-                if (_objectContainer.IsRegistered<ISearchContext>())
+                if (objectContainer.IsRegistered<ISearchContext>())
                 {
-                    var searchContext = _objectContainer.Resolve<ISearchContext>();
+                    var searchContext = objectContainer.Resolve<ISearchContext>();
                     //Do some actions over here if needed, e.g. clean up
                 }
             }
@@ -90,11 +78,11 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 var restClient = _apiClientInstance.RestClient!;
 
                 //Register all contexts so they can be used in stepdefinitions
-                _objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(restClient));
+                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(restClient));
             }
             catch (Exception exception)
             {
-                _reqnrollOutputHelper.WriteLine(exception.Message);
+                reqnrollOutputHelper.WriteLine(exception.Message);
 
                 throw;
             }
@@ -105,16 +93,16 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             try
             {
-                if (_scenarioContext.TestError != null)
+                if (scenarioContext.TestError != null)
                 {
-                    var error = _scenarioContext.TestError;
-                    var testName = _scenarioContext.ScenarioInfo.Title;
+                    var error = scenarioContext.TestError;
+                    var testName = scenarioContext.ScenarioInfo.Title;
                     //TODO: add extra logging?
                 }
             }
             catch (Exception exception)
             {
-                _reqnrollOutputHelper.WriteLine(exception.Message);
+                reqnrollOutputHelper.WriteLine(exception.Message);
 
                 throw;
             }
@@ -124,9 +112,9 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 {
                     await _apiClientInstance.Teardown();
                 }
-                if (_objectContainer.IsRegistered<ISearchContext>())
+                if (objectContainer.IsRegistered<ISearchContext>())
                 {
-                    var searchContext = _objectContainer.Resolve<ISearchContext>();
+                    var searchContext = objectContainer.Resolve<ISearchContext>();
                     //Do some actions over here if needed, e.g. clean up
                 }
             }
