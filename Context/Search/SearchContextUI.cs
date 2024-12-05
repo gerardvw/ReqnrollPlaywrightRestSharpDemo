@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 {
     [method: SetsRequiredMembers]
-    public class SearchContextUI(UIDriver uiDriver) : BaseContextUI(uiDriver), ISearchContext
+    public class SearchContextUI(UIDriver uiDriver) : ISearchContext
     {
         private readonly ProductsPage _productsPage = new(uiDriver);
 

@@ -72,18 +72,14 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             try
             {
-                //TODO: move to driver class and pass this to context class
                 var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
-                var apiUrl = $"{baseUrl}";
 
-                _apiDriver = new APIDriver();
-                await _apiDriver.Setup(apiUrl);
+                _apiDriver = new APIDriver(baseUrl);
 
-                //TODO: move to driver class and pass this to context class
-                var restClient = _apiDriver.RestClient!;
+                await _apiDriver.Setup();
 
                 //Register all contexts so they can be used in stepdefinitions
-                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(restClient));
+                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(_apiDriver));
             }
             catch (Exception exception)
             {

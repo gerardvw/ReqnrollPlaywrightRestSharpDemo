@@ -1,10 +1,11 @@
-﻿using ReqnrollPlaywrightRestSharpDemo.API.Clients;
+﻿using ReqnrollPlaywrightRestSharpDemo.API;
+using ReqnrollPlaywrightRestSharpDemo.API.Clients;
 using ReqnrollPlaywrightRestSharpDemo.API.Dtos.Search;
 using RestSharp;
 
 namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 {
-    public class SearchContextAPI(IRestClient restClient) : ISearchContext
+    public class SearchContextAPI(APIDriver apiDriver) : ISearchContext
     {
         private RestResponse<SearchProducts>? _response;
 
@@ -16,7 +17,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 
         public async Task SearchForItem(string searchTerm)
         {
-            var searchProduct = new SearchProduct(restClient);
+            var searchProduct = new SearchProduct(apiDriver.RestClient);
             _response = await searchProduct.SearchAsync(searchTerm);
 
             _response.Should().NotBeNull();
