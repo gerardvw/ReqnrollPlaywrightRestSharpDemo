@@ -2,7 +2,7 @@
 
 namespace ReqnrollPlaywrightRestSharpDemo.API
 {
-    public class ApiClientInstance
+    public class APIDriver
     {
         public IRestClient? RestClient;
 

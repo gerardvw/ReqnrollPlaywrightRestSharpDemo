@@ -8,19 +8,19 @@ namespace ReqnrollPlaywrightRestSharpDemo
     [Binding]
     public sealed class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
     {
-        private BrowserInstance? _browserInstance;
-        private ApiClientInstance? _apiClientInstance;
+        private UIDriver? _uiDriver;
+        private APIDriver? _apiDriver;
 
         [BeforeScenario("@ui")]
         public async Task BeforeScenarioUI()
         {
             try
             {
-                _browserInstance = new BrowserInstance();
-                await _browserInstance.Setup("chrome", true);   //TODO: get values from env.variable
+                _uiDriver = new UIDriver();
+                await _uiDriver.Setup("chrome", true);   //TODO: get values from env.variable
 
                 var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
-                var page = _browserInstance.Page!;
+                var page = _uiDriver.Page!;
 
                 //Register all contexts so they can be used in stepdefinitions
                 objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(baseUrl, page));
@@ -42,7 +42,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 {
                     var error = scenarioContext.TestError;
                     var testName = scenarioContext.ScenarioInfo.Title;
-                    _browserInstance?.CreateScreenShotInReportFolder(testName);
+                    _uiDriver?.CreateScreenShotInReportFolder(testName);
                 }
             }
             catch (Exception exception)
@@ -53,9 +53,9 @@ namespace ReqnrollPlaywrightRestSharpDemo
             }
             finally
             {
-                if (_browserInstance != null)
+                if (_uiDriver != null)
                 {
-                    await _browserInstance.Teardown();
+                    await _uiDriver.Teardown();
                 }
                 if (objectContainer.IsRegistered<ISearchContext>())
                 {
@@ -73,10 +73,10 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
                 var apiUrl = $"{baseUrl}/api";
 
-                _apiClientInstance = new ApiClientInstance();
-                await _apiClientInstance.Setup(apiUrl);
+                _apiDriver = new APIDriver();
+                await _apiDriver.Setup(apiUrl);
 
-                var restClient = _apiClientInstance.RestClient!;
+                var restClient = _apiDriver.RestClient!;
 
                 //Register all contexts so they can be used in stepdefinitions
                 objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(restClient));
@@ -109,9 +109,9 @@ namespace ReqnrollPlaywrightRestSharpDemo
             }
             finally
             {
-                if (_apiClientInstance != null)
+                if (_apiDriver != null)
                 {
-                    await _apiClientInstance.Teardown();
+                    await _apiDriver.Teardown();
                 }
                 if (objectContainer.IsRegistered<ISearchContext>())
                 {

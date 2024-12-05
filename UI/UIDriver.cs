@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace ReqnrollPlaywrightRestSharpDemo.UI
 {
-    public class BrowserInstance
+    public class UIDriver
     {
         private IBrowser? _browser;
         private IBrowserContext? _context;
