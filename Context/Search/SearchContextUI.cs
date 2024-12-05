@@ -1,18 +1,14 @@
 ﻿using Microsoft.Playwright;
+using ReqnrollPlaywrightRestSharpDemo.UI;
 using ReqnrollPlaywrightRestSharpDemo.UI.Pages;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 {
-    public class SearchContextUI : ScenarioContextUI, ISearchContext
+    [method: SetsRequiredMembers]
+    public class SearchContextUI(UIDriver uiDriver) : BaseContextUI(uiDriver), ISearchContext
     {
-        private readonly ProductsPage _productsPage;
-
-        [SetsRequiredMembers]
-        public SearchContextUI(string baseUrl, IPage page) : base(baseUrl, page)
-        {
-            _productsPage = new ProductsPage(BaseUrl, Page);
-        }
+        private readonly ProductsPage _productsPage = new(uiDriver);
 
         public async Task AuthenticateUser()
         {

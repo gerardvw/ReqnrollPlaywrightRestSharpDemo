@@ -2,21 +2,20 @@
 
 namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
 {
-    public abstract class BasePage(string baseUrl, IPage page)
+    public abstract class BasePage(UIDriver uiDriver)
     {
-        protected string BaseUrl { get; set; } = baseUrl;
-        protected IPage Page { get; set; } = page;
+        protected UIDriver UIDriver { get; set; } = uiDriver;
 
         protected abstract string RelativeUri { get; }
 
         public Task<IResponse?> Navigate()
         {
-            return Page.GotoAsync($"{BaseUrl.TrimEnd('/')}{RelativeUri}");
+            return UIDriver.Page.GotoAsync($"{UIDriver.BaseUrl.TrimEnd('/')}{RelativeUri}");
         }
 
         public async Task AcceptConsentIfVisible()
         {
-            var consentButton = Page.GetByRole(AriaRole.Button, new PageGetByRoleOptions() { Name = "Consent" });
+            var consentButton = UIDriver.Page.GetByRole(AriaRole.Button, new PageGetByRoleOptions() { Name = "Consent" });
             if (await consentButton.IsVisibleAsync())
             {
                 await consentButton.ClickAsync();

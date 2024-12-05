@@ -2,14 +2,14 @@
 
 namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
 {
-    public class ProductsPage(string baseUrl, IPage page) : BasePage(baseUrl, page)
+    public class ProductsPage(UIDriver uiDriver) : BasePage(uiDriver)
     {
-        private ILocator SearchFor() => Page.Locator("#search_product");
-        private ILocator Submit() => Page.Locator("#submit_search");
+        private ILocator SearchFor() => UIDriver.Page.Locator("#search_product");
+        private ILocator Submit() => UIDriver.Page.Locator("#submit_search");
 
         protected override string RelativeUri => "/products";
         
-        public ILocator ProductInfoList() => Page.Locator(".productinfo");
+        public ILocator ProductInfoList() => UIDriver.Page.Locator(".productinfo");
 
         public async Task SearchForItem(string searchTerm)
         {

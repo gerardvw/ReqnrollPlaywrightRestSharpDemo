@@ -7,7 +7,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.API.Clients
     {
         public Task<RestResponse<SearchProducts>> SearchAsync(string searchTerm)
         {
-            var request = new RestRequest("searchProduct", Method.Post);
+            var request = new RestRequest("api/searchProduct", Method.Post);
 
             request.AddParameter("search_product", searchTerm);
 

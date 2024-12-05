@@ -3,12 +3,15 @@ using NUnit.Framework;
 
 namespace ReqnrollPlaywrightRestSharpDemo.UI
 {
-    public class UIDriver
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    public class UIDriver(string baseUrl)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
         private IBrowser? _browser;
         private IBrowserContext? _context;
 
-        public IPage? Page;
+        public string BaseUrl { get; set; } = baseUrl;
+        public IPage Page;
 
         public async Task Setup(string browserName, bool headless)
         {

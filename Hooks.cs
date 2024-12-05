@@ -11,19 +11,21 @@ namespace ReqnrollPlaywrightRestSharpDemo
         private UIDriver? _uiDriver;
         private APIDriver? _apiDriver;
 
+        //TODO: use switch for using ui OR api for before/teardowns based on executing ui or api scenario's.
+        //This switch is for scenario's which do have @ui and @api tags, which results in executing both befores and teardowns
         [BeforeScenario("@ui")]
         public async Task BeforeScenarioUI()
         {
             try
             {
-                _uiDriver = new UIDriver();
+                var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
+
+                _uiDriver = new UIDriver(baseUrl);
+
                 await _uiDriver.Setup("chrome", true);   //TODO: get values from env.variable
 
-                var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
-                var page = _uiDriver.Page!;
-
                 //Register all contexts so they can be used in stepdefinitions
-                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(baseUrl, page));
+                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(_uiDriver));
             }
             catch (Exception exception)
             {
@@ -70,12 +72,14 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             try
             {
+                //TODO: move to driver class and pass this to context class
                 var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
-                var apiUrl = $"{baseUrl}/api";
+                var apiUrl = $"{baseUrl}";
 
                 _apiDriver = new APIDriver();
                 await _apiDriver.Setup(apiUrl);
 
+                //TODO: move to driver class and pass this to context class
                 var restClient = _apiDriver.RestClient!;
 
                 //Register all contexts so they can be used in stepdefinitions
