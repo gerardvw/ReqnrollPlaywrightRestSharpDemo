@@ -71,9 +71,10 @@ namespace ReqnrollPlaywrightRestSharpDemo
             try
             {
                 var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
+                var apiUrl = $"{baseUrl}/api";
 
                 _apiClientInstance = new ApiClientInstance();
-                await _apiClientInstance.Setup(baseUrl);   //TODO: get values from env.variable
+                await _apiClientInstance.Setup(apiUrl);
 
                 var restClient = _apiClientInstance.RestClient!;
 

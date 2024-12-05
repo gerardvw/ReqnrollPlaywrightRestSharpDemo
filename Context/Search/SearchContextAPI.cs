@@ -1,4 +1,5 @@
-﻿using ReqnrollPlaywrightRestSharpDemo.API.Dtos.Search;
+﻿using ReqnrollPlaywrightRestSharpDemo.API.Clients;
+using ReqnrollPlaywrightRestSharpDemo.API.Dtos.Search;
 using RestSharp;
 
 namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
@@ -15,13 +16,8 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 
         public async Task SearchForItem(string searchTerm)
         {
-            //TODO: refactor to apiclient
-            var request = new RestRequest("api/searchProduct", Method.Post);
-
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddParameter("search_product", searchTerm);
-
-            _response = await restClient.ExecuteAsync<SearchProducts>(request);
+            var searchProduct = new SearchProduct(restClient);
+            _response = await searchProduct.SearchAsync(searchTerm);
 
             _response.Should().NotBeNull();
             ((int)_response.StatusCode).Should().BeInRange(200, 299);
