@@ -21,6 +21,7 @@ Features and scenarios can be started from your IDE and from commandline
 Running from Visual Studio:
 
 - Set "Auto Detect runsettings Files" to checked (by using Test Explorer - Configure Run Settings)
+- Run test(s) from Test Explorer
 
 
 Running from commandline:

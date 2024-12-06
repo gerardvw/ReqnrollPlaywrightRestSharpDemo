@@ -1,39 +1,28 @@
-using NUnit.Framework;
 using Reqnroll.BoDi;
 using ReqnrollPlaywrightRestSharpDemo.API;
+using ReqnrollPlaywrightRestSharpDemo.Config;
 using ReqnrollPlaywrightRestSharpDemo.Context.Search;
 using ReqnrollPlaywrightRestSharpDemo.UI;
+using static ReqnrollPlaywrightRestSharpDemo.Config.Enums;
 
 namespace ReqnrollPlaywrightRestSharpDemo
 {
     [Binding]
-    public sealed class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext, TestContext testContext)
+    public sealed partial class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
     {
         private UIDriver? _uiDriver;
         private APIDriver? _apiDriver;
 
-        //TODO: move to separate class and check on null values
-        public static string BaseUrl => TestContext.Parameters["BaseUrl"]!;
-        public static TestLevels TestLevel => (TestLevels)Enum.Parse(typeof(TestLevels), TestContext.Parameters["TestLevel"]!, true);
-        public static string Browser => TestContext.Parameters["Browser"]!;
-        public static bool Headless => bool.Parse(TestContext.Parameters["Headless"]!);
-
-        public enum TestLevels
-        {
-            api,
-            ui
-        }
-
         [BeforeScenario("@ui")]
         public async Task BeforeScenarioUI()
         {
-            if (TestLevel == TestLevels.ui) //Prevent to setup UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
+            if (TestParameters.TestLevel == TestLevels.ui) //Prevent to setup UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
                 try
                 {
-                    _uiDriver = new UIDriver(BaseUrl);
+                    _uiDriver = new UIDriver(TestParameters.BaseUrl);
 
-                    await _uiDriver.Setup(Browser, Headless);
+                    await _uiDriver.Setup(TestParameters.Browser, TestParameters.Headless);
 
                     //Register all contexts so they can be used in stepdefinitions
                     objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(_uiDriver));
@@ -50,7 +39,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
         [AfterScenario("@ui")]
         public async Task AfterScenarioUI()
         {
-            if (TestLevel == TestLevels.ui) //Prevent to teardown UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
+            if (TestParameters.TestLevel == TestLevels.ui) //Prevent to teardown UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
                 try
                 {
@@ -85,11 +74,11 @@ namespace ReqnrollPlaywrightRestSharpDemo
         [BeforeScenario("@api")]
         public async Task BeforeScenarioAPI()
         {
-            if (TestLevel == TestLevels.api) //Prevent to setup APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
+            if (TestParameters.TestLevel == TestLevels.api) //Prevent to setup APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
                 try
                 {
-                    _apiDriver = new APIDriver(BaseUrl);
+                    _apiDriver = new APIDriver(TestParameters.BaseUrl);
 
                     await _apiDriver.Setup();
 
@@ -108,7 +97,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
         [AfterScenario("@api")]
         public async Task AfterScenarioAPI()
         {
-            if (TestLevel == TestLevels.api) //Prevent to teardown APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
+            if (TestParameters.TestLevel == TestLevels.api) //Prevent to teardown APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
                 try
                 {
