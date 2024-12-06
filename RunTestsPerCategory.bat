@@ -1,1 +1,1 @@
-dotnet test --filter TestCategory=%1
+dotnet test --filter TestCategory=%1 --settings .runsettings

@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using Reqnroll.BoDi;
 using ReqnrollPlaywrightRestSharpDemo.API;
 using ReqnrollPlaywrightRestSharpDemo.Context.Search;
@@ -6,63 +7,77 @@ using ReqnrollPlaywrightRestSharpDemo.UI;
 namespace ReqnrollPlaywrightRestSharpDemo
 {
     [Binding]
-    public sealed class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
+    public sealed class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext, TestContext testContext)
     {
         private UIDriver? _uiDriver;
         private APIDriver? _apiDriver;
 
-        //TODO: use switch for using ui OR api for before/teardowns based on executing ui or api scenario's.
-        //This switch is for scenario's which do have @ui and @api tags, which results in executing both befores and teardowns
+        //TODO: move to separate class and check on null values
+        public static string BaseUrl => TestContext.Parameters["BaseUrl"]!;
+        public static TestLevels TestLevel => (TestLevels)Enum.Parse(typeof(TestLevels), TestContext.Parameters["TestLevel"]!, true);
+        public static string Browser => TestContext.Parameters["Browser"]!;
+        public static bool Headless => bool.Parse(TestContext.Parameters["Headless"]!);
+
+        public enum TestLevels
+        {
+            api,
+            ui
+        }
+
         [BeforeScenario("@ui")]
         public async Task BeforeScenarioUI()
         {
-            try
+            if (TestLevel == TestLevels.ui) //Prevent to setup UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
-                var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
+                try
+                {
+                    _uiDriver = new UIDriver(BaseUrl);
 
-                _uiDriver = new UIDriver(baseUrl);
+                    await _uiDriver.Setup(Browser, Headless);
 
-                await _uiDriver.Setup("chrome", true);   //TODO: get values from env.variable
+                    //Register all contexts so they can be used in stepdefinitions
+                    objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(_uiDriver));
+                }
+                catch (Exception exception)
+                {
+                    reqnrollOutputHelper.WriteLine(exception.Message);
 
-                //Register all contexts so they can be used in stepdefinitions
-                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(_uiDriver));
-            }
-            catch (Exception exception)
-            {
-                reqnrollOutputHelper.WriteLine(exception.Message);
-
-                throw;
+                    throw;
+                }
             }
         }
 
         [AfterScenario("@ui")]
         public async Task AfterScenarioUI()
         {
-            try
+            if (TestLevel == TestLevels.ui) //Prevent to teardown UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
-                if (scenarioContext.TestError != null)
+                try
                 {
-                    var error = scenarioContext.TestError;
-                    var testName = scenarioContext.ScenarioInfo.Title;
-                    _uiDriver?.CreateScreenShotInReportFolder(testName);
+                    if (scenarioContext.TestError != null)
+                    {
+                        var error = scenarioContext.TestError;
+                        var testName = scenarioContext.ScenarioInfo.Title;
+                        _uiDriver?.CreateScreenShotInReportFolder(testName);
+                    }
                 }
-            }
-            catch (Exception exception)
-            {
-                reqnrollOutputHelper.WriteLine(exception.Message);
+                catch (Exception exception)
+                {
+                    reqnrollOutputHelper.WriteLine(exception.Message);
 
-                throw;
-            }
-            finally
-            {
-                if (_uiDriver != null)
-                {
-                    await _uiDriver.Teardown();
+                    throw;
                 }
-                if (objectContainer.IsRegistered<ISearchContext>())
+                finally
                 {
-                    var searchContext = objectContainer.Resolve<ISearchContext>();
-                    //Do some actions over here if needed, e.g. clean up
+                    if (_uiDriver != null)
+                    {
+                        await _uiDriver.Teardown();
+                    }
+                    if (objectContainer.IsRegistered<ISearchContext>())
+                    {
+                        var searchContext = objectContainer.Resolve<ISearchContext>();
+                        //Do some actions over here if needed, e.g. clean up
+                    }
                 }
             }
         }
@@ -70,53 +85,57 @@ namespace ReqnrollPlaywrightRestSharpDemo
         [BeforeScenario("@api")]
         public async Task BeforeScenarioAPI()
         {
-            try
+            if (TestLevel == TestLevels.api) //Prevent to setup APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
-                var baseUrl = "http://automationexercise.com"; //TODO: get from config file or env.variable
+                try
+                {
+                    _apiDriver = new APIDriver(BaseUrl);
 
-                _apiDriver = new APIDriver(baseUrl);
+                    await _apiDriver.Setup();
 
-                await _apiDriver.Setup();
+                    //Register all contexts so they can be used in stepdefinitions
+                    objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(_apiDriver));
+                }
+                catch (Exception exception)
+                {
+                    reqnrollOutputHelper.WriteLine(exception.Message);
 
-                //Register all contexts so they can be used in stepdefinitions
-                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(_apiDriver));
-            }
-            catch (Exception exception)
-            {
-                reqnrollOutputHelper.WriteLine(exception.Message);
-
-                throw;
+                    throw;
+                }
             }
         }
 
         [AfterScenario("@api")]
         public async Task AfterScenarioAPI()
         {
-            try
+            if (TestLevel == TestLevels.api) //Prevent to teardown APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
-                if (scenarioContext.TestError != null)
+                try
                 {
-                    var error = scenarioContext.TestError;
-                    var testName = scenarioContext.ScenarioInfo.Title;
-                    //TODO: add extra logging?
+                    if (scenarioContext.TestError != null)
+                    {
+                        var error = scenarioContext.TestError;
+                        var testName = scenarioContext.ScenarioInfo.Title;
+                        //Do some actions over here if needed, e.g. extra logging
+                    }
                 }
-            }
-            catch (Exception exception)
-            {
-                reqnrollOutputHelper.WriteLine(exception.Message);
+                catch (Exception exception)
+                {
+                    reqnrollOutputHelper.WriteLine(exception.Message);
 
-                throw;
-            }
-            finally
-            {
-                if (_apiDriver != null)
-                {
-                    await _apiDriver.Teardown();
+                    throw;
                 }
-                if (objectContainer.IsRegistered<ISearchContext>())
+                finally
                 {
-                    var searchContext = objectContainer.Resolve<ISearchContext>();
-                    //Do some actions over here if needed, e.g. clean up
+                    if (_apiDriver != null)
+                    {
+                        await _apiDriver.Teardown();
+                    }
+                    if (objectContainer.IsRegistered<ISearchContext>())
+                    {
+                        var searchContext = objectContainer.Resolve<ISearchContext>();
+                        //Do some actions over here if needed, e.g. clean up
+                    }
                 }
             }
         }
