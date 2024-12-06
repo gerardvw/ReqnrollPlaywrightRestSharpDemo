@@ -31,7 +31,7 @@ Running from commandline:
 	- --settings \<name .runsettings file> => needed to get/set configuration for testrun
 
 	Optional:
-	- -- TestRunParameters.Parameter(name=\\"<name>\\", value=\\"<value>\\") => needed if parameter from .runsettings file needs to be overridden
+	- -- TestRunParameters.Parameter(name=\\"parametername\\", value=\\"parametervalue\\") => needed if parameter from .runsettings file needs to be overridden
 	
 	E.g. dotnet test --filter TestCategory=ui --settings .runsettings -- TestRunParameters.Parameter(name=\\"baseUrl\\", value=\\"http://automationexercise.com\\")
 
