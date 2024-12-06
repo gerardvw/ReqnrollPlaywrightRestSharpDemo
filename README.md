@@ -31,8 +31,8 @@ Running from commandline:
 	- --settings \<name .runsettings file> => needed to get/set configuration for testrun
 
 	Optional:
-	- -- TestRunParameters.Parameter(name=\"<name>\", value=\"<value>\") => needed if parameter from .runsettings file needs to be overridden
+	- -- TestRunParameters.Parameter(name=\\"<name>\\", value=\\"<value>\\") => needed if parameter from .runsettings file needs to be overridden
 	
-	E.g. dotnet test --filter TestCategory=ui --settings .runsettings -- TestRunParameters.Parameter(name=\"baseUrl\", value=\"http://automationexercise.com\")
+	E.g. dotnet test --filter TestCategory=ui --settings .runsettings -- TestRunParameters.Parameter(name=\\"baseUrl\\", value=\\"http://automationexercise.com\\")
 
 - See RunTestsAll.bat how all tests are started, splitted in a testrun for api and a testrun for ui
