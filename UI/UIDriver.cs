@@ -25,7 +25,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
                 Args = new List<string>() { "--auth-server-allowlist=\"_\"", "--start-maximized" }
             });
 
-            _context = await _browser.NewContextAsync(new BrowserNewContextOptions { IgnoreHTTPSErrors = true, ViewportSize = new ViewportSize { Width = 1920, Height = 1080 }, ScreenSize = new ScreenSize { Width = 1920, Height = 1080 }, HttpCredentials = new HttpCredentials { Username = "TODO", Password = "TODO" } });
+            _context = await _browser.NewContextAsync(new BrowserNewContextOptions { IgnoreHTTPSErrors = true, ViewportSize = ViewportSize.NoViewport, ScreenSize = new ScreenSize { Width = 1920, Height = 1080 }, HttpCredentials = new HttpCredentials { Username = "TODO", Password = "TODO" } });
             _context.SetDefaultTimeout(10000);
             await _context.ClearCookiesAsync();
 
