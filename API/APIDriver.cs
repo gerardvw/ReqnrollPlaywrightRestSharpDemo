@@ -2,11 +2,11 @@
 
 namespace ReqnrollPlaywrightRestSharpDemo.API
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public class APIDriver(string baseUrl)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public IRestClient RestClient;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         public Task Setup()
         {
@@ -18,10 +18,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.API
 
         public Task Teardown()
         {
-            if (RestClient != null)
-            {
-                RestClient.Dispose();
-            }
+            RestClient?.Dispose();
 
             return Task.CompletedTask;
         }
