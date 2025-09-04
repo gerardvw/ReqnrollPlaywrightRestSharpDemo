@@ -43,9 +43,9 @@ namespace ReqnrollPlaywrightRestSharpDemo
             {
                 try
                 {
+                    //TODO: move to _uiDriver.Teardown()
                     if (scenarioContext.TestError != null)
                     {
-                        var error = scenarioContext.TestError;
                         var testName = scenarioContext.ScenarioInfo.Title;
                         _uiDriver?.CreateScreenShotInReportFolder(testName);
                     }
@@ -60,7 +60,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
                 {
                     if (_uiDriver != null)
                     {
-                        await _uiDriver.Teardown();
+                        await _uiDriver.Teardown(scenarioContext.TestError != null);
                     }
                     if (objectContainer.IsRegistered<ISearchContext>())
                     {
