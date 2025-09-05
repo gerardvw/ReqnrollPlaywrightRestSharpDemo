@@ -43,21 +43,6 @@ namespace ReqnrollPlaywrightRestSharpDemo
             {
                 try
                 {
-                    //TODO: move to _uiDriver.Teardown()
-                    if (scenarioContext.TestError != null)
-                    {
-                        var testName = scenarioContext.ScenarioInfo.Title;
-                        _uiDriver?.CreateScreenShotInReportFolder(testName);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    reqnrollOutputHelper.WriteLine(exception.Message);
-
-                    throw;
-                }
-                finally
-                {
                     if (_uiDriver != null)
                     {
                         await _uiDriver.Teardown(scenarioContext.TestError != null);
@@ -67,6 +52,12 @@ namespace ReqnrollPlaywrightRestSharpDemo
                         var searchContext = objectContainer.Resolve<ISearchContext>();
                         //Do some actions over here if needed, e.g. clean up
                     }
+                }
+                catch (Exception exception)
+                {
+                    reqnrollOutputHelper.WriteLine(exception.Message);
+
+                    throw;
                 }
             }
         }
@@ -101,11 +92,14 @@ namespace ReqnrollPlaywrightRestSharpDemo
             {
                 try
                 {
-                    if (scenarioContext.TestError != null)
+                    if (_apiDriver != null)
                     {
-                        var error = scenarioContext.TestError;
-                        var testName = scenarioContext.ScenarioInfo.Title;
-                        //Do some actions over here if needed, e.g. extra logging
+                        await _apiDriver.Teardown(scenarioContext);
+                    }
+                    if (objectContainer.IsRegistered<ISearchContext>())
+                    {
+                        var searchContext = objectContainer.Resolve<ISearchContext>();
+                        //Do some actions over here if needed, e.g. clean up
                     }
                 }
                 catch (Exception exception)
@@ -113,18 +107,6 @@ namespace ReqnrollPlaywrightRestSharpDemo
                     reqnrollOutputHelper.WriteLine(exception.Message);
 
                     throw;
-                }
-                finally
-                {
-                    if (_apiDriver != null)
-                    {
-                        await _apiDriver.Teardown();
-                    }
-                    if (objectContainer.IsRegistered<ISearchContext>())
-                    {
-                        var searchContext = objectContainer.Resolve<ISearchContext>();
-                        //Do some actions over here if needed, e.g. clean up
-                    }
                 }
             }
         }

@@ -19,6 +19,56 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
 
         public async Task Setup(string browserName, bool headless)
         {
+            await CreateBrowser(browserName, headless);
+            await CreateBrowserContext();
+            await BrowserContextClearCookies();
+
+            SetDefaultTimeouts();
+
+            await BrowserContextCreatePage();
+            await CreateAndStartTracing();
+        }
+
+        private async Task CreateAndStartTracing()
+        {
+            ArgumentNullException.ThrowIfNull(_browserContext);
+
+            _tracing = new Tracing(_browserContext, LogUIScenarioPrefix);
+            await _tracing.StartTracing();
+        }
+
+        private async Task BrowserContextCreatePage()
+        {
+            ArgumentNullException.ThrowIfNull(_browserContext);
+
+            Page = await _browserContext.NewPageAsync();
+        }
+
+        private async Task BrowserContextClearCookies()
+        {
+            ArgumentNullException.ThrowIfNull(_browserContext);
+
+            await _browserContext.ClearCookiesAsync();
+        }
+
+        private void SetDefaultTimeouts()
+        {
+            ArgumentNullException.ThrowIfNull(_browserContext);
+
+            _browserContext.SetDefaultTimeout(10000);
+            _browserContext.SetDefaultNavigationTimeout(10000);
+            Assertions.SetDefaultExpectTimeout(10000);
+        }
+
+        private async Task CreateBrowserContext()
+        {
+            ArgumentNullException.ThrowIfNull(_browser);
+
+            _browserContext = await _browser.NewContextAsync(new BrowserNewContextOptions { IgnoreHTTPSErrors = true, ViewportSize = ViewportSize.NoViewport, ScreenSize = new ScreenSize { Width = 1920, Height = 1080 }, HttpCredentials = new HttpCredentials { Username = "TODO", Password = "TODO" } });
+        }
+
+        private async Task CreateBrowser(string browserName, bool headless)
+        {
             var playwright = await Playwright.CreateAsync().ConfigureAwait(false);
 
             _browser = await playwright.Chromium.LaunchAsync(new()
@@ -26,27 +76,13 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
                 Channel = browserName,
                 Headless = headless,
                 //Disable auto login (Windows Integrated Authentication) by adding auth-server-allowlist argument, so given http credentials are always applied
-                Args = new List<string>() { "--auth-server-allowlist=\"_\"", "--start-maximized" }
+                Args = ["--auth-server-allowlist=\"_\"", "--start-maximized"]
             });
-
-            _browserContext = await _browser.NewContextAsync(new BrowserNewContextOptions { IgnoreHTTPSErrors = true, ViewportSize = ViewportSize.NoViewport, ScreenSize = new ScreenSize { Width = 1920, Height = 1080 }, HttpCredentials = new HttpCredentials { Username = "TODO", Password = "TODO" } });
-            _browserContext.SetDefaultTimeout(10000);
-            _browserContext.SetDefaultNavigationTimeout(10000);
-            Assertions.SetDefaultExpectTimeout(10000);
-            await _browserContext.ClearCookiesAsync();
-
-            Page = await _browserContext.NewPageAsync();
-            
-            _tracing = new Tracing(_browserContext, LogUIScenarioPrefix);
-            await _tracing.StartTracing();
         }
 
         public async Task Teardown(bool scenarioFailed)
         {
-            if (_tracing != null)
-            {
-                await _tracing.StopTracing(scenarioFailed);
-            }
+            await HandleScenarioFailureAndTracing(scenarioFailed);
 
             if (Page != null)
             {
@@ -62,17 +98,32 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
             }
         }
 
-        public void CreateScreenShotInReportFolder(string step = "")
+        private async Task HandleScenarioFailureAndTracing(bool scenarioFailed)
         {
-            var screenshotFile = $"{TestContext.CurrentContext.Test.ClassName}-{TestContext.CurrentContext.Test.MethodName}-{step}{Guid.NewGuid()}.png";
+            await CreateScreenShotInReportFolderIfFailed(scenarioFailed);
 
-            var outputFolderAndFile = Path.Combine(ReportFolder(), screenshotFile);
-
-            Page?.ScreenshotAsync(new PageScreenshotOptions
+            if (_tracing != null)
             {
-                Path = outputFolderAndFile,
-                FullPage = true,
-            }).Wait();
+                await _tracing.StopTracing(scenarioFailed);
+            }
+        }
+
+        private async Task CreateScreenShotInReportFolderIfFailed(bool scenarioFailed, string step = "")
+        {
+            if (scenarioFailed)
+            {
+                var screenshotFile = $"{TestContext.CurrentContext.Test.ClassName}-{TestContext.CurrentContext.Test.MethodName}-{step}{Guid.NewGuid()}.png";
+
+                var outputFolderAndFile = Path.Combine(ReportFolder(), screenshotFile);
+                if (Page != null)
+                {
+                    await Page.ScreenshotAsync(new PageScreenshotOptions
+                    {
+                        Path = outputFolderAndFile,
+                        FullPage = true,
+                    });
+                }
+            }
         }
 
         private static string ReportFolder()
