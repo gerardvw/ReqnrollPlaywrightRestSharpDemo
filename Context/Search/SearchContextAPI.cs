@@ -1,13 +1,11 @@
 ﻿using ReqnrollPlaywrightRestSharpDemo.API;
 using ReqnrollPlaywrightRestSharpDemo.API.Clients;
-using ReqnrollPlaywrightRestSharpDemo.API.Dtos.Search;
-using RestSharp;
 
 namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 {
     public class SearchContextAPI(APIDriver apiDriver) : ISearchContext
     {
-        private RestResponse<SearchProducts>? _response;
+        private readonly SearchProduct _searchProduct = new(apiDriver.RestClient);
 
         public Task AuthenticateUser(string user)
         {
@@ -17,31 +15,30 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 
         public async Task SearchForItem(string searchTerm)
         {
-            var searchProduct = new SearchProduct(apiDriver.RestClient);
-            _response = await searchProduct.SearchAsync(searchTerm);
-
-            _response.Should().NotBeNull();
-            ((int)_response.StatusCode).Should().BeInRange(200, 299);
+            await _searchProduct.SearchAsync(searchTerm);
         }
 
         public Task ValidateResult(string expectedDescription, string expectedPrice)
         {
-            _response?.Data?.Products.Should().Contain(p => p.Name == expectedDescription && p.Price == expectedPrice);
-
+            _searchProduct.ValidateResponse(200, 299);
+            _searchProduct.ValidateProductAvailable(expectedDescription, expectedPrice);
+            
             return Task.CompletedTask;
         }
 
         public Task ValidateResultExpected(int expectedItems)
         {
-            _response?.Data?.Products.Count.Should().Be(expectedItems);
+            _searchProduct.ValidateResponse(200, 299);
+            _searchProduct.ValidateProductCountExpected(expectedItems);
 
             return Task.CompletedTask;
         }
 
         public Task ValidateResultNotExpected(int notExpectedItems)
         {
-            _response?.Data?.Products.Count.Should().NotBe(notExpectedItems);
-
+            _searchProduct.ValidateResponse(200, 299);
+            _searchProduct.ValidateProductCountNotExpected(notExpectedItems);
+            
             return Task.CompletedTask;
         }
     }
