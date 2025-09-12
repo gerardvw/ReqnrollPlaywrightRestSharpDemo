@@ -9,7 +9,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
     {
         private RestResponse<SearchProducts>? _response;
 
-        public Task AuthenticateUser()
+        public Task AuthenticateUser(string user)
         {
             //No authentication and authorisation is applicable in this case, so this is a dummy
             return Task.CompletedTask;

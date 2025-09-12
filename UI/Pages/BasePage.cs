@@ -8,9 +8,12 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
 
         protected abstract string RelativeUri { get; }
 
-        public Task<IResponse?> Navigate()
+        public async Task Navigate(int expectedStatusCodeMinimum, int expectedStatusCodeMaximum)
         {
-            return UIDriver.Page.GotoAsync($"{UIDriver.BaseUrl.TrimEnd('/')}{RelativeUri}");
+            var response = await UIDriver.Page.GotoAsync($"{UIDriver.BaseUrl.TrimEnd('/')}{RelativeUri}");
+
+            response.Should().NotBeNull();
+            response!.Status.Should().BeInRange(expectedStatusCodeMinimum, expectedStatusCodeMaximum);
         }
 
         public async Task AcceptConsentIfVisible()

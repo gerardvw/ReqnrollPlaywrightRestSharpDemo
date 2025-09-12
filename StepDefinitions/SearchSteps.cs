@@ -8,7 +8,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.StepDefinitions
         [Given("{word} is authenticated and authorised for searching products")]
         public async Task UserIsAuthenticatedAndAuthorisedForSearchingProducts(string user)
         {
-            await searchContext.AuthenticateUser();
+            await searchContext.AuthenticateUser(user);
         }
 
         [When("{word} searches for {string}")]

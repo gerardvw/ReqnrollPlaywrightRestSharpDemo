@@ -6,10 +6,12 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
     {
         private ILocator SearchFor() => UIDriver.Page.Locator("#search_product");
         private ILocator Submit() => UIDriver.Page.Locator("#submit_search");
+        private ILocator ProductInfoList() => UIDriver.Page.Locator(".productinfo");
+        private ILocator ProductInfoListFiltered(params string[] expectedTexts)
+            => expectedTexts.Aggregate(ProductInfoList(),
+                (locator, text) => locator.Filter(new LocatorFilterOptions { HasText = text }));
 
         protected override string RelativeUri => "/products";
-        
-        public ILocator ProductInfoList() => UIDriver.Page.Locator(".productinfo");
 
         public async Task SearchForItem(string searchTerm)
         {
@@ -17,16 +19,25 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
             await Submit().ClickAsync();
         }
 
-        public ILocator ProductInfoItemsFiltered(string[] expectedTexts)
+        public async Task ExpectProductCountAsync(int expectedCount)
         {
-            var filteredLocator = ProductInfoList();
-            foreach (var text in expectedTexts)
-            {
-                // Sequentially filter the locator for each expected text
-                filteredLocator = filteredLocator.Filter(new LocatorFilterOptions { HasText = text });
-            }
+            var productInfoList = ProductInfoList();
 
-            return filteredLocator;
+            await Assertions.Expect(productInfoList).ToHaveCountAsync(expectedCount);
+        }
+
+        public async Task ExpectNotProductCountAsync(int notExpectedItems)
+        {
+            var productInfoList = ProductInfoList();
+
+            await Assertions.Expect(productInfoList).Not.ToHaveCountAsync(notExpectedItems);
+        }
+
+        public async Task ExpectProductToBeVisibleAsync(string[] expectedTexts)
+        {
+            var productInfoItems = ProductInfoListFiltered(expectedTexts);
+
+            await Assertions.Expect(productInfoItems).ToBeVisibleAsync();
         }
     }
 }
