@@ -19,8 +19,8 @@ namespace ReqnrollPlaywrightRestSharpDemo.API.Clients
         public Task ValidateResponse(int expectedStatusCodeMinimum, int expectedStatusCodeMaximum)
         {
             _response.Should().NotBeNull();
-            ((int) _response.StatusCode).Should().BeInRange(expectedStatusCodeMinimum, expectedStatusCodeMaximum);
-            
+            ((int)_response!.StatusCode).Should().BeInRange(expectedStatusCodeMinimum, expectedStatusCodeMaximum);
+
             return Task.CompletedTask;
         }
 
