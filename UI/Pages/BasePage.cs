@@ -10,7 +10,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
 
         public async Task Navigate(int expectedStatusCodeMinimum, int expectedStatusCodeMaximum)
         {
-            var response = await UIDriver.Page.GotoAsync($"{UIDriver.BaseUrl.TrimEnd('/')}{RelativeUri}");
+            var response = await UIDriver.Navigate(RelativeUri);
 
             response.Should().NotBeNull();
             response!.Status.Should().BeInRange(expectedStatusCodeMinimum, expectedStatusCodeMaximum);
