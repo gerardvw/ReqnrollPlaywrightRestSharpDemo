@@ -18,15 +18,15 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
             await _searchProduct.SearchAsync(searchTerm);
         }
 
-        public Task ValidateResult(string expectedDescription, string expectedPrice)
+        public Task ValidateResultProductsAvailable(string expectedDescription, string expectedPrice)
         {
             _searchProduct.ValidateResponse(200, 299);
-            _searchProduct.ValidateProductAvailable(expectedDescription, expectedPrice);
+            _searchProduct.ValidateProductsAvailable(expectedDescription, expectedPrice);
             
             return Task.CompletedTask;
         }
 
-        public Task ValidateResultExpected(int expectedItems)
+        public Task ValidateResultExpectedProductCount(int expectedItems)
         {
             _searchProduct.ValidateResponse(200, 299);
             _searchProduct.ValidateProductCountExpected(expectedItems);
@@ -34,7 +34,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
             return Task.CompletedTask;
         }
 
-        public Task ValidateResultNotExpected(int notExpectedItems)
+        public Task ValidateResultNotExpectedProductCount(int notExpectedItems)
         {
             _searchProduct.ValidateResponse(200, 299);
             _searchProduct.ValidateProductCountNotExpected(notExpectedItems);

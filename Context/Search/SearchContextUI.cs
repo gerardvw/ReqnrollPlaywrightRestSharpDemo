@@ -22,19 +22,19 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
             await _productsPage.SearchForItem(searchTerm);
         }
 
-        public async Task ValidateResult(string expectedDescription, string expectedPrice)
+        public async Task ValidateResultProductsAvailable(string expectedDescription, string expectedPrice)
         {
-            await _productsPage.ExpectProductToBeVisibleAsync([expectedDescription, expectedPrice]);
+            await _productsPage.ValidateProductsToBeAvailableAsync([expectedDescription, expectedPrice]);
         }
 
-        public async Task ValidateResultExpected(int expectedItems)
+        public async Task ValidateResultExpectedProductCount(int expectedItems)
         {
-            await _productsPage.ExpectProductCountAsync(expectedItems);
+            await _productsPage.ValidateProductCountAsync(expectedItems);
         }
 
-        public async Task ValidateResultNotExpected(int notExpectedItems)
+        public async Task ValidateResultNotExpectedProductCount(int notExpectedItems)
         {
-            await _productsPage.ExpectNotProductCountAsync(notExpectedItems);
+            await _productsPage.ValidateNotProductCountAsync(notExpectedItems);
         }
     }
 }

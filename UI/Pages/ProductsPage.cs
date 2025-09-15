@@ -19,25 +19,25 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
             await Submit().ClickAsync();
         }
 
-        public async Task ExpectProductCountAsync(int expectedCount)
+        public async Task ValidateProductCountAsync(int expectedCount)
         {
             var productInfoList = ProductInfoList();
 
             await Assertions.Expect(productInfoList).ToHaveCountAsync(expectedCount);
         }
 
-        public async Task ExpectNotProductCountAsync(int notExpectedItems)
+        public async Task ValidateNotProductCountAsync(int notExpectedItems)
         {
             var productInfoList = ProductInfoList();
 
             await Assertions.Expect(productInfoList).Not.ToHaveCountAsync(notExpectedItems);
         }
 
-        public async Task ExpectProductToBeVisibleAsync(string[] expectedTexts)
+        public async Task ValidateProductsToBeAvailableAsync(string[] expectedTexts)
         {
             var productInfoItems = ProductInfoListFiltered(expectedTexts);
 
-            await Assertions.Expect(productInfoItems).ToBeVisibleAsync();
+            await Assertions.Expect(productInfoItems).ToBeEnabledAsync();
         }
     }
 }

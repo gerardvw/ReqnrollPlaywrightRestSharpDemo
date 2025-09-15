@@ -4,8 +4,8 @@
     {
         Task AuthenticateUser(string user);
         Task SearchForItem(string searchTerm);
-        Task ValidateResult(string expectedDescription, string expectedPrice);
-        Task ValidateResultExpected(int expectedItems);
-        Task ValidateResultNotExpected(int notExpectedItems);
+        Task ValidateResultProductsAvailable(string expectedDescription, string expectedPrice);
+        Task ValidateResultExpectedProductCount(int expectedItems);
+        Task ValidateResultNotExpectedProductCount(int notExpectedItems);
     }
 }

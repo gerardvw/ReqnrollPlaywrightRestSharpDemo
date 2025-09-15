@@ -24,7 +24,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.API.Clients
             return Task.CompletedTask;
         }
 
-        public Task ValidateProductAvailable(string expectedDescription, string expectedPrice)
+        public Task ValidateProductsAvailable(string expectedDescription, string expectedPrice)
         {
             _response?.Data?.Products.Should().Contain(p => p.Name == expectedDescription && p.Price == expectedPrice);
 

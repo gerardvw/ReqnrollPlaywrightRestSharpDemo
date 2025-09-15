@@ -20,19 +20,19 @@ namespace ReqnrollPlaywrightRestSharpDemo.StepDefinitions
         [Then("An item with description {string} and a price {string} should be returned")]
         public async Task AnItemWithDescriptionAndAPriceShouldBeReturned(string expectedDescription, string expectedPrice)
         {
-            await searchContext.ValidateResult(expectedDescription, expectedPrice);
+            await searchContext.ValidateResultProductsAvailable(expectedDescription, expectedPrice);
         }
 
         [Then("No items should be returned")]
         public async Task NoItemsShouldBeReturned()
         {
-            await searchContext.ValidateResultExpected(0);
+            await searchContext.ValidateResultExpectedProductCount(0);
         }
 
         [Then("There should be items returned")]
         public async Task ThereShouldBeItemsReturned()
         {
-            await searchContext.ValidateResultNotExpected(0);
+            await searchContext.ValidateResultNotExpectedProductCount(0);
         }
     }
 }
