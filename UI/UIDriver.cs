@@ -97,7 +97,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
 
         public Task<IResponse?> Navigate(string relativeUri)
         {
-            return Page.GotoAsync($"{baseUrl.TrimEnd('/')}{relativeUri}");
+            return Page!.GotoAsync($"{baseUrl.TrimEnd('/')}{relativeUri}");
         }
 
         private async Task HandleScenarioFailureAndTracing(bool scenarioFailed)
