@@ -4,9 +4,9 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI.Pages
 {
     public class ProductsPage(UIDriver uiDriver) : BasePage(uiDriver)
     {
-        private ILocator SearchFor() => UIDriver.Page.Locator("#search_product");
-        private ILocator Submit() => UIDriver.Page.Locator("#submit_search");
-        private ILocator ProductInfoList() => UIDriver.Page.Locator(".productinfo");
+        private ILocator SearchFor() => UIDriver.Page!.Locator("#search_product");
+        private ILocator Submit() => UIDriver.Page!.Locator("#submit_search");
+        private ILocator ProductInfoList() => UIDriver.Page!.Locator(".productinfo");
         private ILocator ProductInfoListFiltered(params string[] expectedTexts)
             => expectedTexts.Aggregate(ProductInfoList(),
                 (locator, text) => locator.Filter(new LocatorFilterOptions { HasText = text }));

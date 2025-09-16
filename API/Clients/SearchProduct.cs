@@ -3,8 +3,10 @@ using RestSharp;
 
 namespace ReqnrollPlaywrightRestSharpDemo.API.Clients
 {
-    public class SearchProduct(IRestClient restClient)
+    public class SearchProduct(IRestClient? restClient)
     {
+        private readonly IRestClient restClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
+
         private RestResponse<SearchProducts>? _response;
 
         public async Task SearchAsync(string searchTerm)
