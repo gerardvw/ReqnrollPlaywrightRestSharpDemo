@@ -10,8 +10,6 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
         private IBrowserContext? _browserContext;
         private Tracing? _tracing;
 
-        private static string LogUIScenarioPrefix => !string.IsNullOrEmpty(TestContext.CurrentContext?.Test?.MethodName) ? $"UI Scenario:{TestContext.CurrentContext?.Test?.MethodName}." : "UI Scenario:<none>.";
-
         public IPage? Page;
 
         public async Task Setup(string browserName, bool headless)
@@ -30,7 +28,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
         {
             ArgumentNullException.ThrowIfNull(_browserContext);
 
-            _tracing = new Tracing(_browserContext, LogUIScenarioPrefix);
+            _tracing = new Tracing(_browserContext);
             await _tracing.StartTracing();
         }
 
