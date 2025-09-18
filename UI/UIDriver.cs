@@ -1,6 +1,7 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
 using ReqnrollPlaywrightRestSharpDemo.Support;
+using ReqnrollPlaywrightRestSharpDemo.Support.Extensions;
 
 namespace ReqnrollPlaywrightRestSharpDemo.UI
 {
@@ -79,18 +80,9 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
         {
             await HandleScenarioFailureAndTracing(scenarioFailed);
 
-            if (Page != null)
-            {
-                await Page.CloseAsync();
-            }
-            if (_browserContext != null)
-            {
-                await _browserContext.CloseAsync();
-            }
-            if (_browser != null)
-            {
-                await _browser.CloseAsync();
-            }
+            await Page?.CloseAsync().ForAwait()!;
+            await _browserContext?.CloseAsync().ForAwait()!;
+            await _browser?.CloseAsync().ForAwait()!;
         }
 
         public Task<IResponse?> Navigate(string relativeUri)
@@ -102,10 +94,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
         {
             await CreateScreenShotInReportFolderIfFailed(scenarioFailed);
 
-            if (_tracing != null)
-            {
-                await _tracing.StopTracing(scenarioFailed);
-            }
+            await _tracing?.StopTracing(scenarioFailed).ForAwait()!;
         }
 
         private async Task CreateScreenShotInReportFolderIfFailed(bool scenarioFailed, string step = "")
@@ -115,14 +104,12 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
                 var screenshotFile = $"{TestContext.CurrentContext.Test.ClassName}-{TestContext.CurrentContext.Test.MethodName}-{step}{Guid.NewGuid()}.png";
 
                 var outputFolderAndFile = Path.Combine(ReportFolder(), screenshotFile);
-                if (Page != null)
-                {
-                    await Page.ScreenshotAsync(new PageScreenshotOptions
-                    {
-                        Path = outputFolderAndFile,
-                        FullPage = true,
-                    });
-                }
+                await Page?.ScreenshotAsync(new PageScreenshotOptions
+                        {
+                            Path = outputFolderAndFile,
+                            FullPage = true,
+                        }
+                      ).ForAwait()!;
             }
         }
 

@@ -2,6 +2,7 @@ using Reqnroll.BoDi;
 using ReqnrollPlaywrightRestSharpDemo.API;
 using ReqnrollPlaywrightRestSharpDemo.Config;
 using ReqnrollPlaywrightRestSharpDemo.Context.Search;
+using ReqnrollPlaywrightRestSharpDemo.Support.Extensions;
 using ReqnrollPlaywrightRestSharpDemo.UI;
 using static ReqnrollPlaywrightRestSharpDemo.Config.Enums;
 
@@ -43,10 +44,8 @@ namespace ReqnrollPlaywrightRestSharpDemo
             {
                 try
                 {
-                    if (_uiDriver != null)
-                    {
-                        await _uiDriver.Teardown(scenarioContext.TestError != null);
-                    }
+                    await _uiDriver?.Teardown(scenarioContext.TestError != null).ForAwait()!;
+                    
                     if (objectContainer.IsRegistered<ISearchContext>())
                     {
                         var searchContext = objectContainer.Resolve<ISearchContext>();
@@ -92,10 +91,8 @@ namespace ReqnrollPlaywrightRestSharpDemo
             {
                 try
                 {
-                    if (_apiDriver != null)
-                    {
-                        await _apiDriver.Teardown(scenarioContext);
-                    }
+                    await _apiDriver?.Teardown(scenarioContext).ForAwait()!;
+
                     if (objectContainer.IsRegistered<ISearchContext>())
                     {
                         var searchContext = objectContainer.Resolve<ISearchContext>();
