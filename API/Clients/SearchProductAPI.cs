@@ -3,7 +3,7 @@ using RestSharp;
 
 namespace ReqnrollPlaywrightRestSharpDemo.API.Clients
 {
-    public class SearchProduct(IRestClient? restClient)
+    public class SearchProductAPI(IRestClient? restClient)
     {
         private readonly IRestClient restClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
 

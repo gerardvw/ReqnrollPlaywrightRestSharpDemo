@@ -5,7 +5,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.Context.Search
 {
     public class SearchContextAPI(APIDriver apiDriver) : ISearchContext
     {
-        private readonly SearchProduct _searchProduct = new(apiDriver.RestClient);
+        private readonly SearchProductAPI _searchProduct = new(apiDriver.RestClient);
 
         public Task AuthenticateUser(string user)
         {
