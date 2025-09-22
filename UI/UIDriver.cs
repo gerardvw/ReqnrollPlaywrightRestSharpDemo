@@ -80,9 +80,9 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
         {
             await HandleScenarioFailureAndTracing(scenarioFailed);
 
-            await Page?.CloseAsync().ForAwait()!;
-            await _browserContext?.CloseAsync().ForAwait()!;
-            await _browser?.CloseAsync().ForAwait()!;
+            await (Page?.CloseAsync()!).ForAwait();
+            await (_browserContext?.CloseAsync()!).ForAwait();
+            await (_browser?.CloseAsync()!).ForAwait();
         }
 
         public Task<IResponse?> Navigate(string relativeUri)
@@ -94,7 +94,7 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
         {
             await CreateScreenShotInReportFolderIfFailed(scenarioFailed);
 
-            await _tracing?.StopTracing(scenarioFailed).ForAwait()!;
+            await (_tracing?.StopTracing(scenarioFailed)!).ForAwait();
         }
 
         private async Task CreateScreenShotInReportFolderIfFailed(bool scenarioFailed, string step = "")
@@ -104,12 +104,12 @@ namespace ReqnrollPlaywrightRestSharpDemo.UI
                 var screenshotFile = $"{TestContext.CurrentContext.Test.ClassName}-{TestContext.CurrentContext.Test.MethodName}-{step}{Guid.NewGuid()}.png";
 
                 var outputFolderAndFile = Path.Combine(ReportFolder(), screenshotFile);
-                await Page?.ScreenshotAsync(new PageScreenshotOptions
+                await (Page?.ScreenshotAsync(new PageScreenshotOptions
                         {
                             Path = outputFolderAndFile,
                             FullPage = true,
                         }
-                      ).ForAwait()!;
+                      )!).ForAwait();
             }
         }
 

@@ -33,7 +33,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             if (TestParameters.TestLevel == TestLevels.ui) //Prevent to teardown UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
-                await _uiDriver?.Teardown(scenarioContext.TestError != null).ForAwait()!;
+                await (_uiDriver?.Teardown(scenarioContext.TestError != null)!).ForAwait();
                     
                 if (objectContainer.IsRegistered<ISearchContext>())
                 {
@@ -62,7 +62,7 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             if (TestParameters.TestLevel == TestLevels.api) //Prevent to teardown APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
-                await _apiDriver?.Teardown(scenarioContext).ForAwait()!;
+                await (_apiDriver?.Teardown(scenarioContext)!).ForAwait();
 
                 if (objectContainer.IsRegistered<ISearchContext>())
                 {
