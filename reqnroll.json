@@ -2,6 +2,6 @@
   "$schema": "https://schemas.reqnroll.net/reqnroll-config-latest.json",
 
   "formatters": {
-    "html": { "outputFilePath": "${REPORT_PATH:-report/reqnroll_report.html}" }
+    "html": { "outputFilePath": "report/reqnroll_report.html" }
   }
 }
