@@ -9,7 +9,7 @@ using static ReqnrollPlaywrightRestSharpDemo.Config.Enums;
 namespace ReqnrollPlaywrightRestSharpDemo
 {
     [Binding]
-    public sealed partial class Hooks(IObjectContainer objectContainer, IReqnrollOutputHelper reqnrollOutputHelper, ScenarioContext scenarioContext)
+    public sealed partial class Hooks(IObjectContainer objectContainer, ScenarioContext scenarioContext)
     {
         private UIDriver? _uiDriver;
         private APIDriver? _apiDriver;
