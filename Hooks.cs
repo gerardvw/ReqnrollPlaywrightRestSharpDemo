@@ -19,21 +19,12 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             if (TestParameters.TestLevel == TestLevels.ui) //Prevent to setup UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
-                try
-                {
-                    _uiDriver = new UIDriver(TestParameters.BaseUrl);
+                _uiDriver = new UIDriver(TestParameters.BaseUrl);
 
-                    await _uiDriver.Setup(TestParameters.Browser, TestParameters.Headless);
+                await _uiDriver.Setup(TestParameters.Browser, TestParameters.Headless);
 
-                    //Register all contexts so they can be used in stepdefinitions
-                    objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(_uiDriver));
-                }
-                catch (Exception exception)
-                {
-                    reqnrollOutputHelper.WriteLine(exception.Message);
-
-                    throw;
-                }
+                //Register all contexts so they can be used in stepdefinitions
+                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextUI(_uiDriver));
             }
         }
 
@@ -42,21 +33,12 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             if (TestParameters.TestLevel == TestLevels.ui) //Prevent to teardown UIDriver in case of testrun is being executed on api level AND scenario has both @ui AND @api tags
             {
-                try
-                {
-                    await _uiDriver?.Teardown(scenarioContext.TestError != null).ForAwait()!;
+                await _uiDriver?.Teardown(scenarioContext.TestError != null).ForAwait()!;
                     
-                    if (objectContainer.IsRegistered<ISearchContext>())
-                    {
-                        var searchContext = objectContainer.Resolve<ISearchContext>();
-                        //Do some actions over here if needed, e.g. clean up
-                    }
-                }
-                catch (Exception exception)
+                if (objectContainer.IsRegistered<ISearchContext>())
                 {
-                    reqnrollOutputHelper.WriteLine(exception.Message);
-
-                    throw;
+                    var searchContext = objectContainer.Resolve<ISearchContext>();
+                    //Do some actions over here if needed, e.g. clean up
                 }
             }
         }
@@ -66,21 +48,12 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             if (TestParameters.TestLevel == TestLevels.api) //Prevent to setup APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
-                try
-                {
-                    _apiDriver = new APIDriver(TestParameters.BaseUrl);
+                _apiDriver = new APIDriver(TestParameters.BaseUrl);
 
-                    await _apiDriver.Setup();
+                await _apiDriver.Setup();
 
-                    //Register all contexts so they can be used in stepdefinitions
-                    objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(_apiDriver));
-                }
-                catch (Exception exception)
-                {
-                    reqnrollOutputHelper.WriteLine(exception.Message);
-
-                    throw;
-                }
+                //Register all contexts so they can be used in stepdefinitions
+                objectContainer.RegisterInstanceAs<ISearchContext>(new SearchContextAPI(_apiDriver));
             }
         }
 
@@ -89,21 +62,12 @@ namespace ReqnrollPlaywrightRestSharpDemo
         {
             if (TestParameters.TestLevel == TestLevels.api) //Prevent to teardown APIDriver in case of testrun is being executed on ui level AND scenario has both @ui AND @api tags
             {
-                try
-                {
-                    await _apiDriver?.Teardown(scenarioContext).ForAwait()!;
+                await _apiDriver?.Teardown(scenarioContext).ForAwait()!;
 
-                    if (objectContainer.IsRegistered<ISearchContext>())
-                    {
-                        var searchContext = objectContainer.Resolve<ISearchContext>();
-                        //Do some actions over here if needed, e.g. clean up
-                    }
-                }
-                catch (Exception exception)
+                if (objectContainer.IsRegistered<ISearchContext>())
                 {
-                    reqnrollOutputHelper.WriteLine(exception.Message);
-
-                    throw;
+                    var searchContext = objectContainer.Resolve<ISearchContext>();
+                    //Do some actions over here if needed, e.g. clean up
                 }
             }
         }
